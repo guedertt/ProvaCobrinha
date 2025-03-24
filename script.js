@@ -67,8 +67,9 @@ class Cobra extends Entidade {
    }
    #houveColisao(comida) {
        pontuacao += 1;
-       comida.x = Math.random() * (canvas.width - 20);
-       comida.y = Math.random() * (canvas.height - 20);
+       comida.x = Math.random() * (canvas.width - 40);
+       comida.y = Math.random() * (canvas.height - 40);
+       cobra.largura+= 10
    }
    colisaoParedes() {
        if (this.x + this.largura >= canvas.width || this.y + this.altura >= canvas.height || this.x <= 0 || this.y <= 0) {
