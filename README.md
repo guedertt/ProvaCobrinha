@@ -3,4 +3,4 @@
 
 Jogo feito em HTML e JS baseado no snake game, no jogo o seu objetivo é coletar a maior quantidade de maças possível, porém, a cada maça o tamanho da cobrinha aumenta.
 
-https://drive.google.com/file/d/1P430v1myBhanexFfIakAxRsTNx0WLldj/view?usp=sharing
+
