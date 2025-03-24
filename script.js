@@ -1,6 +1,6 @@
-const canvas = document.getElementById('jogoCanvas')
-const ctx = canvas.getContext('2d')
-
+const canvas = document.getElementById('jogoCanvas');
+const ctx = canvas.getContext('2d');
+let gameOver = false;  
 
 const teclasPressionadas = {
    KeyW: false,
@@ -8,6 +8,7 @@ const teclasPressionadas = {
    KeyD: false,
    KeyA: false
 };
+
 document.addEventListener('keydown', (e) => {
    for (let tecla in teclasPressionadas) {
        if (teclasPressionadas.hasOwnProperty(e.code)) {
@@ -19,7 +20,6 @@ document.addEventListener('keydown', (e) => {
    }
 });
 
-
 class Entidade {
    constructor(x, y, largura, altura) {
        this.x = x
@@ -27,60 +27,72 @@ class Entidade {
        this.largura = largura
        this.altura = altura
    }
-   desenhar (cor){
+   desenhar(cor) {
        ctx.fillStyle = cor
        ctx.fillRect(this.x, this.y, this.largura, this.altura)
    }
 }
 
-
 class Cobra extends Entidade {
    constructor(x, y, largura, altura) {
-       super(x, y, largura, altura)
+       super(x, y, largura, altura);
    }
    atualizar() {
+       if (gameOver) return;  
        if (teclasPressionadas.KeyW) {
-           this.y -= 7
+           this.y -= 7;
        } else if (teclasPressionadas.KeyS) {
-           this.y += 7
+           this.y += 7;
        } else if (teclasPressionadas.KeyA) {
-           this.x -= 7
+           this.x -= 7;
        } else if (teclasPressionadas.KeyD) {
-           this.x += 7
+           this.x += 7;
        }
    }
-   verificarColisao(comida){
-       if(
+   verificarColisao(comida) {
+       if (
            this.x < comida.x + comida.largura &&
            this.x + this.largura > comida.x &&
            this.y < comida.y + comida.altura &&
            this.y + this.altura > comida.y
-       ){ 
-           this.#houveColisao(comida)
+       ) { 
+           this.#houveColisao(comida);
        }
    }
-   #houveColisao(comida){
-       comida.x = Math.random()*canvas.width-10
-       comida.y = Math.random()*canvas.height-10
+   #houveColisao(comida) {
+       comida.x = Math.random() * canvas.width - 10;
+       comida.y = Math.random() * canvas.height - 10;
+   }
+   colisaoParedes() {
+       if (this.x + this.largura >= canvas.width || this.y + this.altura >= canvas.height || this.x <= 0 || this.y <= 0) {
+           gameOver = true;  
+           alert('Game Over!');
+
+       }
    }
 }
+
 class Comida extends Entidade {
    constructor() {
-       super(Math.random()*canvas.width-10,Math.random()*canvas.height-10, 20, 20)
+       super(Math.random() * canvas.width - 10, Math.random() * canvas.height - 10, 20, 20);
    }
 }
 
+const cobra = new Cobra(100, 200, 20, 20);
+const comida = new Comida();
 
-const cobra = new Cobra(100, 200, 20, 20)
-const comida = new Comida()
 
 
 function loop() {
-   ctx.clearRect(0, 0, canvas.width, canvas.height)
-   cobra.desenhar('green')
-   cobra.atualizar()
-   comida.desenhar('red')
-   cobra.verificarColisao(comida)
-   requestAnimationFrame(loop)
+   ctx.clearRect(0, 0, canvas.width, canvas.height);
+   cobra.desenhar('green');
+   cobra.atualizar();
+   cobra.colisaoParedes();  
+   comida.desenhar('red');
+   cobra.verificarColisao(comida);
+   if (!gameOver) {  
+    requestAnimationFrame(loop);
+   }
 }
-loop()
+
+loop();
