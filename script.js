@@ -1,6 +1,7 @@
 const canvas = document.getElementById('jogoCanvas');
 const ctx = canvas.getContext('2d');
 let gameOver = false;  
+let pontuacao = 0;
 
 const teclasPressionadas = {
    KeyW: false,
@@ -31,6 +32,11 @@ class Entidade {
        ctx.fillStyle = cor
        ctx.fillRect(this.x, this.y, this.largura, this.altura)
    }
+   desenharPontuacao() {
+       ctx.fillStyle = 'white';
+       ctx.font = '30px Arial';
+       ctx.fillText('Pontuacao: ' + pontuacao, 20, 30);
+   }
 }
 
 class Cobra extends Entidade {
@@ -60,28 +66,32 @@ class Cobra extends Entidade {
        }
    }
    #houveColisao(comida) {
-       comida.x = Math.random() * canvas.width - 10;
-       comida.y = Math.random() * canvas.height - 10;
+       pontuacao += 1;
+       comida.x = Math.random() * (canvas.width - 40);
+       comida.y = Math.random() * (canvas.height - 40);
+       cobra.largura+= 10
    }
    colisaoParedes() {
        if (this.x + this.largura >= canvas.width || this.y + this.altura >= canvas.height || this.x <= 0 || this.y <= 0) {
            gameOver = true;  
            alert('Game Over!');
-
        }
    }
 }
 
 class Comida extends Entidade {
    constructor() {
-       super(Math.random() * canvas.width - 10, Math.random() * canvas.height - 10, 20, 20);
+       super(
+           Math.random() * (canvas.width - 20),
+           Math.random() * (canvas.height - 20),
+           20,
+           20
+       );
    }
 }
 
 const cobra = new Cobra(100, 200, 20, 20);
 const comida = new Comida();
-
-
 
 function loop() {
    ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -90,8 +100,10 @@ function loop() {
    cobra.colisaoParedes();  
    comida.desenhar('red');
    cobra.verificarColisao(comida);
+   cobra.desenharPontuacao(); 
+
    if (!gameOver) {  
-    requestAnimationFrame(loop);
+       requestAnimationFrame(loop);
    }
 }
 
